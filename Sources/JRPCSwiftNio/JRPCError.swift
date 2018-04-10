@@ -7,17 +7,30 @@
 
 import Foundation
 
-public enum JRPCError: Int, Encodable {
-  case server = -32000
-  case request = -32600
-  case method = -32601
-  case params = -32602
-  case `internal` = -32603
-  case parse = -32700
-  var message: String {
+public enum JRPCError: Encodable {
+  case server(message: String), request, method, params, `internal`, parse
+  
+  var code: Int {
     switch self {
     case .server:
-      return "Server error"
+      return -32000
+    case .request:
+      return -32600
+    case .method:
+      return -32601
+    case .params:
+      return -32602
+    case .internal:
+      return -32603
+    case .parse:
+      return -32700
+    }
+  }
+  
+  var message: String {
+    switch self {
+    case .server(let message):
+      return message
     case .request:
       return "Invalid Request"
     case .method:
@@ -30,15 +43,15 @@ public enum JRPCError: Int, Encodable {
       return "Parse error"
     }
   }
-
+  
   enum CodingKeys: String, CodingKey {
     case code = "code"
     case message = "message"
   }
-
+  
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(self.rawValue, forKey: .code)
+    try container.encode(self.code, forKey: .code)
     try container.encode(self.message, forKey: .message)
   }
 }
