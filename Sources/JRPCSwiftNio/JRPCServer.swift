@@ -54,13 +54,13 @@ public class JRPCServer {
     do {
       let channel = try bootstrap.bind(host: host, port: port).wait()
       
-      print("Server started and listening on \(channel.localAddress!)")
+      Log.info(message: "Server started and listening on \(channel.localAddress!)", evenIdents: true)
       
       // This will never unblock as we don't close the ServerChannel
       try channel.closeFuture.wait()
       
     } catch {
-      print("Error starting server")
+      Log.warning(message: "Error starting server", evenIdents: true)
     }
   }
   
