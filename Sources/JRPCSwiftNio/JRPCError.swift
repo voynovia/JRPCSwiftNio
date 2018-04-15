@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum JRPCError: Encodable {
+public enum JRPCError: Error, Encodable {
   case server(message: String), request, method, params, `internal`, parse
   
   var code: Int {
